@@ -1,0 +1,127 @@
+/**
+ * Container with left inputs and right outputs
+ * @class DataNode
+ * @extends WireIt.Container
+ * @constructor
+ * @param {Object} options
+ * @param {WireIt.Layer} layer
+ */
+WireIt.DataNode = function(options, layer) {
+	WireIt.DataNode.superclass.constructor.call(this, options, layer);
+};
+
+YAHOO.lang.extend(WireIt.DataNode, WireIt.Container, {
+   
+   /**
+    * @method setOptions
+    * @param {Object} options the options object
+    */
+   setOptions: function(options) {
+      WireIt.DataNode.superclass.setOptions.call(this, options);
+
+	this.values = {
+		name: "New data node",
+		
+	};
+
+	this.options.nodeName = "New data node";
+
+	this.options.legend = "Define a data node";
+
+	this.options.fieldMap = {
+		"DataNode": {
+			"id": "DataNode",
+			"description": "A data-based rule",
+			"type": "object",
+			"properties": {
+				"name": { "type": "string", "_inputex": { typeInvite: "set a name", label: "Name" } }
+			}
+		}
+	};
+
+	/*this.options.fields = [ 
+		{"type": "select", "inputParams": {"label": "Rule Name", "name": "title", "selectValues": ["Mr","Mrs","Mme"] } },
+		{"inputParams": {"label": "Rule Name", "name": "rulename", "required": true } }, 
+		{"inputParams": {"label": "Lastname", "name": "lastname", "value":"Dupont"} }, 
+		{"type":"email", "inputParams": {"label": "Email", "name": "email", "required": true, "wirable": true}}, 
+		{"type":"boolean", "inputParams": {"label": "Happy to be there ?", "name": "happy"}}, 
+		{"type":"url", "inputParams": {"label": "Website", "name":"website", "size": 25}},
+		{"type":"list", label: "Filters", "elementType": {"type": "select"}, "name": "filters"}
+	];*/
+
+	this.options.fields = [
+		{ name: 'rulename', "label": "Rule Name", value: "blah" },
+		{ type: "list", label: "Filters", elementType: {type: "string"}, name: "filters" }
+	];
+      
+      this.options.xtype = "WireIt.DataNode";
+      
+      this.options.className = options.className || "WireIt-Container WireIt-DataNode";
+
+	this.options.title = options.title;
+      
+      // Overwrite default value for options:
+      this.options.resizable = (typeof options.resizable == "undefined") ? false : options.resizable;
+
+	this.options.terminals.push({
+		"name": "_INPUT",
+		"direction": [-1,0], 
+		"offsetPosition": {"left": -20, "top": 20 }, 
+		"ddConfig": {
+		     	"type": "input",
+		     	"allowedTypes": ["output"]
+		}
+ 	});
+
+	this.options.terminals.push({
+		"name": "_OUTPUT",
+		"direction": [1,0], 
+		"offsetPosition": {"left": 140, "top": 20 }, 
+		"ddConfig": {
+             		"type": "output",
+             		"allowedTypes": ["input"]
+          	}
+ 	});
+
+   },
+
+   render: function() {
+      WireIt.DataNode.superclass.render.call(this);
+      this.bodyEl.appendChild( WireIt.cn('span', null, {textAlign: 'center'}, this.options.nodeName));
+	//this.on("click", this.editDataNode, this, true);
+
+	this.renderForm();
+   },
+
+	renderForm: function() {
+		var formParams = {parentEl: YAHOO.util.Dom.get('dataNodeForm'), fields: this.options.fields, buttons: [{type: 'submit', value: 'Save'}, {type: 'submit', value: 'Cancel'}],};
+		var dataForm = new YAHOO.inputEx.Form(formParams);
+		//dataForm.setValue(this.values);
+
+		/*var builder = new YAHOO.inputEx.JsonSchema.Builder({
+			'schemaIdentifierMap': this.options.fieldMap,
+			'defaultOptions': {
+				'showMsg': true
+			}
+		});
+
+		var inputExDefinition = builder.schemaToInputEx(this.options.fieldMap["DataNode"]);
+		inputExDefinition.parentEl = 'dataNodeForm';
+		var form = new YAHOO.inputEx.Form(inputExDefinition);*/
+
+		dataNodePanel.dataNode = this;
+		//dataNodePanel.dataForm = dataForm;
+		dataNodePanel.show();
+	},
+
+	editDataNode: function() {
+	},
+
+	refresh: function() {
+		this.bodyEl.innerHTML = "";
+	        this.bodyEl.appendChild( WireIt.cn('span', null, {textAlign: 'center'}, this.options.nodeName));
+	}
+
+   
+   
+});
